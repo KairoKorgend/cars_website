@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cars Viewer</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-content">
+        <div class="search-container">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search by model name..."
+          />
+        </div>
+      </div>
+    </header>
+    <div class="category-filter">
+      <ul class="category-list">
+        <li>
+          <button class="category-button" data-category="all">All</button>
+        </li>
+        <li>
+          <button class="category-button" data-category="truck">Truck</button>
+        </li>
+        <li>
+          <button class="category-button" data-category="suv">SUV</button>
+        </li>
+        <li>
+          <button class="category-button" data-category="sedan">Sedan</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="container">
+      <div class="sidebar">
+        <h1>Cars API</h1>
+        <form id="filter-form">
+          <h2>Add filters:</h2>
+          <div class="filter-row">
+            <label for="make">Manufacturer:</label>
+            <select id="make" name="make">
+              <option value="">All</option>
+              <option value="Toyota Corolla">Toyota</option>
+              <option value="Honda Civic">Honda</option>
+              <option value="BMW 3 Series">BMW</option>
+              <option value="Audi A4">Audi</option>
+              <option value="Mercedes-Benz E-Class">Mercedes-Benz</option>
+              <option value="Ford F-150">Ford</option>
+              <option value="Chevrolet Silverado">Chevrolet</option>
+              <option value="Hyundai Sonata">Hyundai</option>
+              <option value="Lexus RX">Lexus</option>
+              <option value="Nissan Altima">Nissan</option>
+            </select>
+          </div>
+          <div class="filter-row">
+            <label for="year">Year:</label>
+            <select id="year" name="year">
+              <option value="">All</option>
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+            </select>
+          </div>
+          <div class="filter-row">
+            <label for="transmission">Transmission:</label>
+            <select id="transmission" name="transmission">
+              <option value="">All</option>
+              <option value="CVT">CVT</option>
+              <option value="6-speed Manual">6-speed Manual</option>
+              <option value="7-speed Automatic">7-speed Automatic</option>
+              <option value="8-speed Automatic">8-speed Automatic</option>
+              <option value="9-speed Automatic">9-speed Automatic</option>
+              <option value="10-speed Automatic">10-speed Automatic</option>
+            </select>
+          </div>
+          <div class="filter-row">
+            <label for="drivetrain">Drivetrain:</label>
+            <select id="drivetrain" name="drivetrain">
+              <option value="">All</option>
+              <option value="All-Wheel Drive">All-Wheel Drive</option>
+              <option value="Front-Wheel Drive">Front-Wheel Drive</option>
+              <option value="Rear-Wheel Drive">Rear-Wheel Drive</option>
+            </select>
+          </div>
+          <div class="filter-row">
+            <label for="horsepower">Horsepower:</label>
+            <select id="horsepower" name="horsepower">
+              <option value="">All</option>
+              <option value="highest">Highest</option>
+              <option value="lowest">Lowest</option>
+            </select>
+          </div>
+          <button type="submit">Apply</button>
+          <button type="button" id="reset-filters">Reset</button>
+          <button id="compare-btn">Compare</button>
+        </form>
+      </div>
+    </div>
+    <div class="grid-container">
+      {{range .}}
+      <div
+        class="car-item"
+        data-name="{{.Name}}"
+        data-year="{{.Year}}"
+        data-engine="{{.Specifications.Engine}}"
+        data-image="{{.Image}}"
+        data-horsepower="{{.Specifications.Horsepower}}"
+        data-transmission="{{.Specifications.Transmission}}"
+        data-drivetrain="{{.Specifications.Drivetrain}}"
+        data-country="{{.Manufacturer.Country}}"
+        data-manufacturer="{{.Manufacturer.ManufacturerName}}"
+        data-category="{{.Categories.Category}}"
+        data-id="{{.ID}}"
+        data-founding="{{.Manufacturer.FoundingYear}}"
+      >
+        <img src="/api/img/{{.Image}}" alt="{{.Name}}" class="car-image" />
+        <div class="car-info">
+          <h2>{{.Name}}</h2>
+          <p>Drivetrain: {{.Specifications.Drivetrain}}</p>
+          <p>Transmission: {{.Specifications.Transmission}}</p>
+          <p>Country: {{.Manufacturer.Country}}</p>
+        </div>
+        <div class="checkbox-container">
+          <input type="checkbox" class="car-checkbox" value="carID1" />
+        </div>
+      </div>
+      {{else}}
+      <p>No cars found.</p>
+      {{end}}
+    </div>
+    <div id="comparison-modal" class="modal" style="display: none"></div>
+    <div id="carModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Car Specifications</h2>
+          <span class="close">&times;</span>
+        </div>
+        <div></div>
+        <table id="carDetailsTable">
+          <tr>
+            <th id="modalCarID"></th>
+          </tr>
+          <tr>
+            <th>Year</th>
+            <td id="modalCarYear"></td>
+          </tr>
+          <tr>
+            <th>Model</th>
+            <td id="modalCarName"></td>
+          </tr>
+          <tr>
+            <th>Engine</th>
+            <td id="modalCarEngine"></td>
+          </tr>
+          <tr>
+            <th>Horsepower</th>
+            <td id="modalCarHorsepower"></td>
+          </tr>
+          <tr>
+            <th>Transmission</th>
+            <td id="modalCarTransmission"></td>
+          </tr>
+          <tr>
+            <th>Drivetrain</th>
+            <td id="modalCarDrivetrain"></td>
+          </tr>
+          <tr>
+            <th>Manufacturer's name</th>
+            <td id="modalCarManufacturerName"></td>
+          </tr>
+          <tr>
+            <th>Country</th>
+            <td id="modalCarCountry"></td>
+          </tr>
+          <tr>
+            <th>Founding year</th>
+            <td id="modalCarFoundingYear"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <script src="/static/js/script.js"></script>
+  </body>
+</html>
