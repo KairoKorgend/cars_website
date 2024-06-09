@@ -1,3 +1,7 @@
+## Cars is a simple website that showcases information about different car models, their specifications, manufacturers, and more.
+
+![](api/img/cars.png)
+
 # Installation Instructions
 
 This document provides the instructions to install and run the components of the program. Please follow the steps below carefully.
